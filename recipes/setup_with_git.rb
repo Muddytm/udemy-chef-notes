@@ -1,9 +1,15 @@
+# like setup, but has a resource for installing git, in case it isn't installed.
+
+package "git" do
+  action :install
+end
+
 package "tree" do
   action :install
 end
 
 package "ntp" do # this whole block is the same as just "package 'ntp'"
-  action :default
+  action :install
 end
 
 file "/etc/motd" do
