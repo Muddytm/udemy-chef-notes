@@ -272,3 +272,53 @@ check out `chef shell-init --help` to get info for how to make chef ruby your de
 if you can't access stuff like `knife`, `chef knife` will work.
 
 docs.chef.io/release/devkit is very helpful for bonus functionality, like foodcritic.
+
+docs.chef.io/ruby.html is a good style guide for chef.
+
+docs.chef.io/debug.html is a good place to learn some debugging tips.
+
+log resource:
+
+```ruby
+log "message" do
+  message "a message to add to the log"
+  level :info
+end
+```
+
+syntax note: if you want multiple actions to be taken by a resource, put all those actions in an array (i.e. [ :start, :enable ])
+
+
+# Test Kitchen and unit testing
+
+Test Kitchen is a testing tool used to execute your configured code on one or more platforms in isolation. It's built into the chefdk.
+
+cookbook/.kitchen.yml is where the settings for the Test Kitchen are located. if this doesn't exist, you can generate it with chef.
+
+chef inspec can be used to write tests.
+
+`kitchen list` gives you some relevant information for testing.
+
+in kitchen.yml, there's a bit named suites. Test Kitchen will run the default recipes listed in here.
+
+when you're ready, run `kitchen create` (in the video, it was run from the cookbook directory)
+
+`kitchen create` creates virtual machines for testing. `kitchen list` should tell you if it's created.
+
+run `kitchen converge` to step through the suites section of the kitchen.yml file.
+
+the test recipes are written in a different way than usual recipes - use inspec for this.
+
+`kitchen verify` can be used to see if the tests pass. this can also be used to help debug since the errors give helpful information.
+
+do more research on this - teacher did not go super deep into this area, since it's pretty expansive as a topic
+
+chefspec is good for unit tests. again, teacher didn't go super in-depth on this, so do your own research.
+
+chefspec testing files are put in spec/unit/recipes. generating recipes will automatically put a test version in this directory.
+
+to test one, just do `chef exec rspec spec/unit/recipes/default_spec.rb` for instance.
+
+chefspec uses goofy syntax as well so...Google it, and see inspec for help. :)
+
+coverage reports are nice for seeing how much of your recipe is "touched" by a test.
