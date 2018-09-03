@@ -13,7 +13,7 @@ members = []
 all_web_nodes.each do |web_node|
   member = {
     # populate ip address and other things
-    "hostname" => web_node["hostname"],
+    "hostname" => web_node["hostname"], # sometimes this might be web_node["cloud"]["ipv4"] I guess?
     "ipaddress" => web_node["ipaddress"],
     "port" => 80,
     "ssl_port" => 80

@@ -223,3 +223,5 @@ example `knife search node "role:web AND recipes:apache"` returns information fo
 all information given is updated as of the last convergence for each node.
 
 see myhaproxy default.rb for an example of how to dynamically fetch things like ip addresses, based on search/indexing. i left the original version in (commented out) but the new version is wayyyyyyyy better. this way, search is used to populate a variable with specific information, then this information is stored as node objects, which is called from with the haproxy recipe later on.
+
+after making these changes to myhaproxy, by the way, we gotta update the version, then do `berks install` and `berks upload` to upload to the chef server.
