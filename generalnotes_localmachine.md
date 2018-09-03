@@ -79,16 +79,12 @@ ERB logic is essentially an if-else statement.
 
 ERB example:
 
-`<% if (50 + 50) == 100 %>
-
+```<% if (50 + 50) == 100 %>
 50 + 50 = <%= 50 + 50>
-
 <% else %>
-
 At some point all of MATH I learned in school changed.
-
 <% end %>
-`
+```
 
 the teacher of this course likes to remind us that <%= looks like an angry squid. Kinda does.
 
@@ -98,20 +94,14 @@ check server.rb in apache cookbook for some more info on how to use templates.
 
 you can also pass variables into templates:
 
-`template "/etc/motd" do
-
+```template "/etc/motd" do
   source "motd.erb"
-
   variables(
-
   :name => 'Caleb Hawkins'
-
   )
-
   action :create
-
 end
-`
+```
 
 then in the template, put in `NAME: <%= @name %>` to call this up.
 
@@ -120,14 +110,11 @@ then in the template, put in `NAME: <%= @name %>` to call this up.
 
 cookbook_file = template, but with no variables. it's completely static. example of how to use in a recipe:
 
-`cookbook_file 'file_dir' do
-
+```cookbook_file 'file_dir' do
   source 'index.html'
-
   action :create
-
 end
-`
+```
 
 to make one, run `chef generate file cookbooksdir/cookbook/ index.hmtl` (as an example)
 
@@ -138,20 +125,14 @@ format of the file itself is like a template, but it has no variables or anythin
 
 remote_file = a method of getting files from online. in the below example, it's an image.
 
-`remote_file "example/path/file.jpg" do
-
+```remote_file "example/path/file.jpg" do
   source "online_file_source.jpg"
-
 end
-
 
 template "example/path/index.html" do
-
   source "index.html.erb"
-
 end
-
-`
+```
 
 index.html.erb then references "file.jpg", and since we've downloaded that via remote_file, it is displayed on the page.
 
@@ -162,24 +143,16 @@ execute resource lets you run other scripts as part of the chef recipe.
 
 there is a bash resource in chef:
 
-`bash "script_name" do
-
+```bash "script_name" do
   user "root"
-
   code "mkdir /var/www/mysites/ && chown -R apache /var/www/mysites"
-
   not_if "[ -d /var/www/mysites/ ]"
-
   not_if do
-
     File.directory?("/var/www/mysites")
-
   end
-
   only_if "somethingsomethingsomething (you get the idea)"
-
 end
-`
+```
 
 the script function shown above is an example one that creates a directory and sets the owner as "apache" recursively.
 
@@ -187,46 +160,31 @@ you can add "guard" conditions, listed above as not_if and only_if, to specify i
 
 now for the execute resource:
 
-`execute "run a script" do
-
+```execute "run a script" do
   user "root"
-
   command <<-EOH
-
   mkdir -p /var/www/mysites/ /
-
   chown -R apache /var/www/mysites/
-
   EOH
-
   not_if blahblahblah
-
 end
-
 
 execute "run_script" do
-
   user "root"
-
   command "./myscript.ssh"
-
   not_if blahblahblah
-
 end
-`
+```
 
 the first option is running a script *in* the recipe, and the second is running the script from its own file.
 
 directory resource:
 
-`directory "/var/www/mysites" do
-
+```directory "/var/www/mysites" do
   owner "apache"
-
   recursive true
-
 end
-`
+```
 
 this does the same thing as the above scripts - creates the directory if it doesn't exist, and then sets the owner as apache recursively if not already done.
 
@@ -237,29 +195,21 @@ this is the preferred way of doing the above function. when possible, use chef r
 
 create a user on a system using a resource:
 
-`user "user1" do
-
+```user "user1" do
   comment "user1"
-
   uid 123
-
   home "/home/user1"
-
   shell "/bin/bash"
-
 end
-`
+```
 
 create a group on a system using a resource:
 
-`group "admins" do
-
+```group "admins" do
   members "user1" # (OR, members ["user1", "user2", "user3"...])
-
   append true
-
 end
-`
+```
 
 append is used if you want to append the above users to the admin list. leave it out if you want the admin list to be overwritten with the user or users.
 
@@ -270,12 +220,10 @@ a good use of these is to loop over user creation and to add them to a group.
 
 notifications are used to notify a resource to take action.
 
-`notifies :action, "resource[name]", :timer
-
+```notifies :action, "resource[name]", :timer
 # timer can be :before, :delayed, :immediately
-
 subscribes :action, "resource[name]", timer
-`
+```
 
 :before = notify the resource to take action before the resource I'm embedded inside of
 :delayed = execute the resource I'm inside of, and then send the notification
@@ -283,27 +231,21 @@ subscribes :action, "resource[name]", timer
 
 example of notifies:
 
-`template "/var/www/html/index.html" do
-
+```template "/var/www/html/index.html" do
   source "index.html.erb"
-
   notifies :restart, "service[httpd]", :immediately
-
 end
-`
+```
 
 if index.html changed its state, then restart httpd service RIGHT AWAY.
 
 example of subscribes:
 
-`service "httpd" do
-
+```service "httpd" do
   action [:enable, :start]
-
   subscribes :restart, "template[/var/www/html/index.html]", :immediately
-
 end
-`
+```
 
 this is the same thing, but in a different place. if that template changes, then restart this service RIGHT AWAY.
 
