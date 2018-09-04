@@ -4,7 +4,8 @@
 #
 # Copyright:: 2018, The Authors, All Rights Reserved.
 
-all_web_nodes = search("node","role:web")
+all_web_nodes = search("node","role:web AND chef_environment:#{node.chef_environment}")
+#all_web_nodes = search("node","role:web")
 
 members = []
 
